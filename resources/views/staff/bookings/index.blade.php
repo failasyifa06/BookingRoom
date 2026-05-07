@@ -28,6 +28,9 @@
                 <a href="{{ route('staff.bookings.index') }}" class="px-3 py-2 text-sm font-medium rounded {{ !request('status') ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 border' }}">Semua</a>
                 <a href="{{ route('staff.bookings.index', ['status' => 'pending']) }}" class="px-3 py-2 text-sm font-medium rounded {{ request('status') == 'pending' ? 'bg-yellow-500 text-white' : 'bg-white text-gray-700 border' }}">Pending</a>
                 <a href="{{ route('staff.bookings.index', ['status' => 'approved']) }}" class="px-3 py-2 text-sm font-medium rounded {{ request('status') == 'approved' ? 'bg-green-600 text-white' : 'bg-white text-gray-700 border' }}">Approved</a>
+                <a href="{{ route('staff.bookings.index', ['status' => 'rejected']) }}" class="px-3 py-2 text-sm font-medium rounded {{ request('status') == 'rejected' ? 'bg-red-600 text-white' : 'bg-white text-gray-700 border' }}">Rejected</a>
+                <a href="{{ route('staff.bookings.index', ['status' => 'completed']) }}" class="px-3 py-2 text-sm font-medium rounded {{ request('status') == 'completed' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 border' }}">Completed</a>
+                <a href="{{ route('staff.bookings.index', ['status' => 'cancelled']) }}" class="px-3 py-2 text-sm font-medium rounded {{ request('status') == 'cancelled' ? 'bg-gray-600 text-white' : 'bg-white text-gray-700 border' }}">Cancelled</a>
             </div>
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded">

@@ -20,10 +20,10 @@ class UpdateBookingStatus extends Command
         $bookings = Booking::where('status', 'approved')
             ->where(function($query) use ($today, $currentTime) {
                 $query->where('date', '<', $today)
-                      ->orWhere(function($q) use ($today, $currentTime) {
-                          $q->where('date', $today)
+                    ->orWhere(function($q) use ($today, $currentTime) {
+                        $q->where('date', $today)
                             ->where('end_time', '<', $currentTime);
-                      });
+                    });
             })
             ->update(['status' => 'completed']);
 
