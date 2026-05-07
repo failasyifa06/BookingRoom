@@ -74,5 +74,7 @@ class DatabaseSeeder extends Seeder
             ]);
             $room->facilities()->sync($r['facilities']);
         }
+
+        $this->call(StaffBookingSeeder::class);
     }
 }
