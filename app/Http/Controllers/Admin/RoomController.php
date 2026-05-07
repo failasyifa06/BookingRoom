@@ -6,8 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Facility;
 use App\Models\Room;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class RoomController extends Controller
 {
@@ -70,7 +74,7 @@ class RoomController extends Controller
         $data = $request->only(['name', 'capacity', 'location', 'description']);
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('rooms', 'public');
+            $data['image'] = $this->storeRoomImage($request->file('image'));
         }
 
         $room = Room::create($data);
@@ -104,10 +108,11 @@ class RoomController extends Controller
         $data = $request->only(['name', 'capacity', 'location', 'description']);
 
         if ($request->hasFile('image')) {
+            $data['image'] = $this->storeRoomImage($request->file('image'));
+
             if ($room->image) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($room->image);
+                Storage::disk('public')->delete($room->image);
             }
-            $data['image'] = $request->file('image')->store('rooms', 'public');
         }
 
         $room->update($data);
@@ -126,10 +131,45 @@ class RoomController extends Controller
     public function destroy(Room $room)
     {
         if ($room->image) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($room->image);
+            Storage::disk('public')->delete($room->image);
         }
         $room->delete();
 
         return redirect()->route('admin.rooms.index')->with('success', 'Ruangan berhasil dihapus');
+    }
+
+    private function storeRoomImage(UploadedFile $image): string
+    {
+        $sourcePath = $image->getRealPath() ?: $image->getPathname();
+
+        if (! $sourcePath || ! is_file($sourcePath)) {
+            throw ValidationException::withMessages([
+                'image' => 'File gambar gagal diupload. Silakan pilih ulang gambar, lalu coba lagi.',
+            ]);
+        }
+
+        $extension = $image->extension() ?: $image->getClientOriginalExtension() ?: 'jpg';
+        $path = 'rooms/'.Str::uuid().'.'.$extension;
+        $stream = fopen($sourcePath, 'r');
+
+        if (! $stream) {
+            throw ValidationException::withMessages([
+                'image' => 'File gambar tidak dapat dibaca. Silakan pilih ulang gambar, lalu coba lagi.',
+            ]);
+        }
+
+        try {
+            if (! Storage::disk('public')->put($path, $stream)) {
+                throw ValidationException::withMessages([
+                    'image' => 'File gambar gagal disimpan. Silakan coba lagi.',
+                ]);
+            }
+        } finally {
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
+        }
+
+        return $path;
     }
 }
