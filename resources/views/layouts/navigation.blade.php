@@ -26,14 +26,14 @@
                         <x-nav-link :href="route('admin.facilities.index')" :active="request()->routeIs('admin.facilities.*')">
                             {{ __('Fasilitas') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
-                            {{ __('User') }}
-                        </x-nav-link>
                         <x-nav-link :href="route('admin.bookings.approval')" :active="request()->routeIs('admin.bookings.approval')">
                             {{ __('Persetujuan') }}
                         </x-nav-link>
                         <x-nav-link :href="route('admin.bookings.all')" :active="request()->routeIs('admin.bookings.all')">
                             {{ __('Semua Booking') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                            {{ __('User') }}
                         </x-nav-link>
                     @else
                         <x-nav-link :href="route('staff.rooms.index')" :active="request()->routeIs('staff.rooms.*')">
